@@ -1,6 +1,6 @@
 # RedPeach TV - Premium IPTV Streaming Application
 
-![RedPeach TV](https://via.placeholder.com/800x450/1a1a1a/cccccc?text=RedPeach+TV)
+![RedPeach TV]([https://via.placeholder.com/800x450/1a1a1a/cccccc?text=RedPeach+TV](https://rifatur28.github.io/RedPeachTV/))
 
 ## Overview
 

@@ -49,11 +49,6 @@ The project follows a clean separation of concerns with three main files:
 - A modern web browser (Chrome, Firefox, Safari, Edge)
 - Internet connection
 
-### Installation
-
-1. Clone the repository or download the files
-2. Open `index.html` in your web browser
-
 ### Usage
 
 1. Click on one of the channel source buttons (US, Bangladesh, India, Pakistan)

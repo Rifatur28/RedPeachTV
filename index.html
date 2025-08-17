@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RedPeach TV - Premium IPTV Streaming</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- HLS.js for video playback -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="fas fa-tv me-2 text-crimson"></i>RedPeach <span class="text-crimson">TV</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#channels">Channels</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#categories">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#pricing">Pricing</a>
+                    </li>
+                </ul>
+                <div class="ms-lg-3 mt-3 mt-lg-0">
+                    <button class="btn btn-crimson btn-sm" id="loginBtn">Login</button>
+                    <button class="btn btn-outline-peach btn-sm ms-2" id="registerBtn">Register</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Premium <span class="text-crimson">IPTV</span> Streaming</h1>
+                    <p class="lead mb-4">Experience thousands of live US channels in stunning HD, Full HD, and 4K quality with our reliable service.</p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <button class="btn btn-crimson px-4 py-2" id="loadUSChannelsBtn">
+                            <i class="fas fa-satellite-dish me-2"></i>Load US Channels
+                        </button>
+                        <button class="btn btn-outline-peach px-4 py-2" id="loadBDChannelsBtn">
+                            <i class="fas fa-globe-asia me-2"></i>Load BD Channels
+                        </button>
+                        <button class="btn btn-outline-peach px-4 py-2" id="loadINChannelsBtn">
+                            <i class="fas fa-globe-asia me-2"></i>Load IN Channels
+                        </button>
+                        <button class="btn btn-outline-peach px-4 py-2" id="loadPKChannelsBtn">
+                            <i class="fas fa-globe-asia me-2"></i>Load PK Channels
+                        </button>
+                        <button class="btn btn-outline-peach px-4 py-2" id="loadPlaylistBtn">
+                            <i class="fas fa-upload me-2"></i>Load M3U Playlist
+                        </button>
+                        <input type="file" id="m3uFileInput" accept=".m3u,.m3u8" style="display: none;">
+                    </div>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block">
+                    <div class="position-relative">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-crimson rounded-3" style="opacity: 0.2; transform: rotate(5deg);"></div>
+                        <div class="position-relative bg-dark rounded-3 overflow-hidden p-3">
+                            <div class="ratio ratio-16x9">
+                                <video id="heroVideo" poster="https://via.placeholder.com/800x450/1a1a1a/cccccc?text=RedPeach+TV" controls>
+                                    <source src="#" type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="p-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Now Playing</h6>
+                                    <div>
+                                        <span class="badge bg-danger me-1">LIVE</span>
+                                        <span class="badge bg-secondary">HD</span>
+                                    </div>
+                                </div>
+                                <h5 class="mt-1 mb-0">Loading channel...</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-5" id="channels">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Video Player Section -->
+                    <div class="player-container mb-4">
+                        <div id="videoPlayer">
+                            <video id="mainVideo" class="w-100" controls></video>
+                        </div>
+                    </div>
+                    
+                    <!-- Channel Info -->
+                    <div class="bg-dark rounded-3 p-4 mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-2 text-center">
+                                <img src="https://via.placeholder.com/80/cccccc/1a1a1a?text=LOGO" alt="Channel Logo" class="img-fluid rounded-circle" id="currentChannelLogo">
+                            </div>
+                            <div class="col-md-10">
+                                <h4 class="mb-1" id="currentChannelName">No channel selected</h4>
+                                <p class="text-muted mb-2" id="currentChannelGroup">Category: N/A</p>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-secondary" id="currentChannelQuality">Quality: N/A</span>
+                                    <span class="badge bg-success d-none" id="currentChannelStatus">LIVE</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Playlist Section -->
+                <div class="col-lg-4">
+                    <div class="bg-dark rounded-3 p-3 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Channel List</h5>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown">
+                                    <i class="fas fa-filter me-1"></i> Filter
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter="all">All Channels</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter="entertainment">Entertainment</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter="sports">Sports</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter="movies">Movies</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter="news">News</a></li>
+                                    <li><a class="dropdown-item filter-option" href="#" data-filter="kids">Kids</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-dark text-light border-end-0"><i class="fas fa-search"></i></span>
+                            <input type="text" class="form-control bg-dark text-light border-start-0" id="channelSearch" placeholder="Search channels...">
+                        </div>
+                        
+                        <div class="playlist-container" id="channelList">
+                            <div class="text-center py-5">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                <h5 class="text-peach">No channels loaded</h5>
+                                <p class="text-muted">Click "Load US Channels" or upload an M3U playlist</p>
+                                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                    <button class="btn btn-sm btn-crimson" id="loadUSChannelsBtn2">
+                                        <i class="fas fa-satellite-dish me-1"></i>US Channels
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-peach" id="loadBDChannelsBtn2">
+                                        <i class="fas fa-globe-asia me-1"></i>BD Channels
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-peach" id="loadINChannelsBtn2">
+                                        <i class="fas fa-globe-asia me-1"></i>IN Channels
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-peach" id="loadPKChannelsBtn2">
+                                        <i class="fas fa-globe-asia me-1"></i>PK Channels
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-peach" id="loadPlaylistBtn2">
+                                        <i class="fas fa-upload me-1"></i>Load M3U
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5 bg-darker" id="features">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Why Choose <span class="text-crimson">RedPeach TV</span></h2>
+                <p class="text-muted lead">Premium IPTV service with unmatched features</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="channel-card h-100 p-4 text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="fas fa-tachometer-alt fa-3x text-crimson"></i>
+                        </div>
+                        <h4 class="mb-3">Lightning Fast</h4>
+                        <p class="text-muted">Our servers are optimized for minimal buffering and instant channel switching with 99.9% uptime.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="channel-card h-100 p-4 text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="fas fa-film fa-3x text-crimson"></i>
+                        </div>
+                        <h4 class="mb-3">Massive Library</h4>
+                        <p class="text-muted">Thousands of live US channels including local networks, sports, movies, and premium channels.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="channel-card h-100 p-4 text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="fas fa-mobile-alt fa-3x text-crimson"></i>
+                        </div>
+                        <h4 class="mb-3">Multi-Device</h4>
+                        <p class="text-muted">Watch on any device - Smart TVs, phones, tablets, computers, and streaming boxes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="py-5" id="pricing">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Simple <span class="text-crimson">Pricing</span></h2>
+                <p class="text-muted lead">Choose the plan that works for you</p>
+            </div>
+            
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-4">
+                    <div class="channel-card h-100 p-4 text-center">
+                        <div class="category-badge">Popular</div>
+                        <h3 class="text-crimson mb-3">Monthly</h3>
+                        <h2 class="display-5 fw-bold mb-0">$15</h2>
+                        <p class="text-muted mb-4">per month</p>
+                        <ul class="list-unstyled text-start mb-4">
+                            <li class="mb-2"><i class="fas fa-check text-crimson me-2"></i> 5000+ Live Channels</li>
+                            <li class="mb-2"><i class="fas fa-check text-crimson me-2"></i> HD & 4K Quality</li>
+                            <li class="mb-2"><i class="fas fa-check text-crimson me-2"></i> 2 Devices</li>
+                            <li class="mb-2"><i class="fas fa-check text-crimson me-2"></i> 24/7 Support</li>
+                            <li class="mb-2"><i class="fas fa-check text-crimson me-2"></i> EPG Guide</li>
+                        </ul>
+                        <button class="btn btn-crimson w-100">Subscribe Now</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="channel-card h-100 p-4 text-center">
+                        <div class="category-badge bg-success">Best Value</div>
+                        <h3 class="text-crimson mb-3">Yearly</h3>
+                        <h2 class="display-5 fw-bold mb-0">$120</h2>
+                        <p class="text-muted mb-4">per year</p>
+                        <ul class="list-unstyled text-start mb-4">
+                            <li class="mb-2"><i class="fas fa-check text-crimson me-2"></i> 5000+ Live Channels</li>
+                            <li class="mb-2"><i class="fas fa-check text-crimson me-2"></i> HD & 4K Quality</li>
+                            <li class="mb-2"><i class="fas fa-check text-crimson me-2"></i> 5 Devices</li>
+                            <li class="mb-2"><i class="fas fa-check text-crimson me-2"></i> 24/7 Support</li>
+                            <li class="mb-2"><i class="fas fa-check text-crimson me-2"></i> EPG Guide</li>
+                            <li class="mb-2"><i class="fas fa-check text-crimson me-2"></i> VOD Library</li>
+                        </ul>
+                        <button class="btn btn-crimson w-100">Subscribe Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h4 class="fw-bold mb-4"><i class="fas fa-tv me-2 text-crimson"></i>RedPeach <span class="text-crimson">TV</span></h4>
+                    <p class="text-muted">Premium IPTV streaming service with thousands of channels from around the world in HD and 4K quality.</p>
+                    <div class="mt-4">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4">
+                    <h5 class="mb-4">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a href="#channels" class="text-muted text-decoration-none">Channels</a></li>
+                        <li class="mb-2"><a href="#features" class="text-muted text-decoration-none">Features</a></li>
+                        <li class="mb-2"><a href="#pricing" class="text-muted text-decoration-none">Pricing</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-4">
+                    <h5 class="mb-4">Support</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">FAQ</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Contact Us</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Help Center</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Terms of Service</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4 col-md-4">
+                    <h5 class="mb-4">Newsletter</h5>
+                    <p class="text-muted">Subscribe to our newsletter for updates and special offers.</p>
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" placeholder="Your email">
+                        <button class="btn btn-crimson" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="my-4 bg-secondary">
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-muted mb-md-0">© <span id="year"></span> RedPeach TV. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-muted text-decoration-none me-3">Privacy Policy</a>
+                    <a href="#" class="text-muted text-decoration-none">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+    <!-- Under Development Modal -->
+    <div class="modal fade" id="developmentModal" tabindex="-1" aria-labelledby="developmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark">
+                <div class="modal-header border-bottom border-crimson">
+                    <h5 class="modal-title text-peach" id="developmentModalLabel">
+                        <i class="fas fa-tools me-2 text-crimson"></i>Under Development
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="mb-4">
+                        <i class="fas fa-code-branch fa-4x text-crimson mb-3"></i>
+                        <div class="position-relative d-inline-block">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 bg-crimson rounded-circle" style="opacity: 0.2; transform: scale(1.2);"></div>
+                        </div>
+                    </div>
+                    <h4 class="mb-3">We're Still Crafting Something Amazing!</h4>
+                    <p class="text-white mb-4">Thank you for visiting RedPeach TV. Our team is working diligently to enhance your streaming experience with new features and improvements. Some functionality may be limited during this time.</p>
+                    
+                    <!-- How to Watch Instructions -->
+                    <div class="bg-dark-subtle p-3 rounded mb-4">
+                        <h5 class="text-crimson mb-3"><i class="fas fa-play-circle me-2"></i>How to Watch TV</h5>
+                        <div class="row g-3 text-start">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <div class="bg-crimson rounded-circle d-flex align-items-center justify-content-center me-2 flex-shrink-0" style="width: 24px; height: 24px;">
+                                        <span class="text-white fw-bold small">1</span>
+                                    </div>
+                                    <p class="small text-muted mb-0">Click on one of the channel source buttons (US, Bangladesh, India, Pakistan)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <div class="bg-crimson rounded-circle d-flex align-items-center justify-content-center me-2 flex-shrink-0" style="width: 24px; height: 24px;">
+                                        <span class="text-white fw-bold small">2</span>
+                                    </div>
+                                    <p class="small text-muted mb-0">Wait for the channel list to load (this may take a few seconds)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <div class="bg-crimson rounded-circle d-flex align-items-center justify-content-center me-2 flex-shrink-0" style="width: 24px; height: 24px;">
+                                        <span class="text-white fw-bold small">3</span>
+                                    </div>
+                                    <p class="small text-muted mb-0">Click on any channel from the list to start watching</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <div class="bg-crimson rounded-circle d-flex align-items-center justify-content-center me-2 flex-shrink-0" style="width: 24px; height: 24px;">
+                                        <span class="text-white fw-bold small">4</span>
+                                    </div>
+                                    <p class="small text-muted mb-0">Use the search box to find specific channels by name</p>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-start">
+                                    <div class="bg-crimson rounded-circle d-flex align-items-center justify-content-center me-2 flex-shrink-0" style="width: 24px; height: 24px;">
+                                        <span class="text-white fw-bold small">5</span>
+                                    </div>
+                                    <p class="small text-muted mb-0">For custom playlists, click "Load M3U Playlist" and enter your M3U URL</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                </div>
+                <div class="modal-footer border-top-0 justify-content-center">
+                    <button type="button" class="btn btn-crimson px-4" data-bs-dismiss="modal">Continue to Site</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
